@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Sebastian Espinoza-Wong — Systems Analyst &amp; Software Developer based in Frederick, MD."/>
+<title>Sebastian Espinoza-Wong — Software Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+/* ─── RESET ─── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ─── VARIABLES ─── */
+:root{
+  --bg:#090e12;         --bg2:#0d1419;
+  --surf:#0f1a14;       --surf2:#0c1620;
+  --bdr:#1a2f20;        --bdr2:#152238;
+  --green:#22c55e;      --green-lt:rgba(34,197,94,.12);   --green-glow:rgba(34,197,94,.25);
+  --blue:#38bdf8;       --blue-lt:rgba(56,189,248,.12);   --blue-glow:rgba(56,189,248,.2);
+  --teal:#2dd4bf;
+  --txt:#e2ede6;        --txt2:#a8c4b0;
+  --muted:#5a7a65;      --muted2:#4a6872;
+  --card:#0f1a14;       --card2:#0c1620;
+  --nav-h:64px;
+}
+
+/* ─── BASE ─── */
+html{scroll-behavior:smooth;scroll-padding-top:var(--nav-h)}
+body{background:var(--bg);color:var(--txt);font-family:'Inter',sans-serif;overflow-x:hidden;line-height:1.6}
+
+/* ─── BACKGROUND LAYERS ─── */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(34,197,94,.022) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(34,197,94,.022) 1px,transparent 1px);
+  background-size:48px 48px;
+}
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 65% 45% at 5% 0%,  rgba(34,197,94,.06) 0%,transparent 60%),
+    radial-gradient(ellipse 55% 45% at 95% 100%,rgba(56,189,248,.06) 0%,transparent 60%);
+}
+
+/* ─── SCROLL PROGRESS ─── */
+#scroll-progress{
+  position:fixed;top:0;left:0;height:2px;width:0%;z-index:9999;
+  background:linear-gradient(90deg,var(--green),var(--blue));
+  transition:width .1s linear;
+}
+
+/* ─── BACK TO TOP ─── */
+#back-top{
+  position:fixed;bottom:2rem;right:2rem;z-index:400;
+  width:42px;height:42px;border-radius:50%;
+  background:var(--surf);border:1px solid var(--bdr);
+  color:var(--green);cursor:pointer;font-size:1rem;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .3s,transform .3s,box-shadow .3s;
+}
+#back-top.show{opacity:1;pointer-events:all}
+#back-top:hover{transform:translateY(-3px);box-shadow:0 0 20px var(--green-glow)}
+
+/* ─── NAV ─── */
+nav#main-nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  height:var(--nav-h);
+  display:flex;justify-content:space-between;align-items:center;
+  padding:0 4rem;
+  background:rgba(9,14,18,.92);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--bdr);
+  transition:box-shadow .3s;
+}
+nav#main-nav.scrolled{box-shadow:0 4px 30px rgba(0,0,0,.45)}
+
+.nav-logo{font-family:'Outfit',sans-serif;font-weight:800;font-size:1.05rem;color:var(--green);letter-spacing:.05em;text-decoration:none}
+.nav-logo span{color:var(--blue)}
+
+.nav-links{display:flex;gap:2rem;list-style:none;align-items:center}
+.nav-links a{
+  font-size:.78rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;transition:color .2s;
+  padding:.25rem 0;position:relative;
+}
+.nav-links a::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:2px;background:var(--green);transition:width .25s}
+.nav-links a:hover,.nav-links a.active{color:var(--green)}
+.nav-links a:hover::after,.nav-links a.active::after{width:100%}
+.nav-cta{
+  background:var(--green-lt)!important;color:var(--green)!important;
+  border:1px solid rgba(34,197,94,.3)!important;
+  padding:.35rem .9rem!important;border-radius:4px!important;
+}
+.nav-cta::after{display:none!important}
+.nav-cta:hover{background:rgba(34,197,94,.22)!important}
+
+/* Hamburger */
+.nav-ham{
+  display:none;flex-direction:column;justify-content:center;gap:5px;
+  cursor:pointer;padding:.5rem;background:none;border:none;z-index:600;
+}
+.nav-ham span{display:block;width:22px;height:2px;background:var(--txt);border-radius:2px;transition:all .3s}
+.nav-ham.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-ham.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.nav-ham.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* Mobile drawer — hidden by default, only displayed when .open is added via JS */
+#nav-drawer{
+  position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;z-index:499;
+  background:rgba(9,14,18,.98);backdrop-filter:blur(20px);
+  display:none;
+  flex-direction:column;align-items:center;justify-content:center;gap:2.5rem;
+  opacity:0;transition:opacity .3s;
+}
+#nav-drawer.open{display:flex;opacity:1}
+#nav-drawer a{
+  font-family:'Outfit',sans-serif;font-size:1.6rem;font-weight:700;
+  color:var(--muted);text-decoration:none;letter-spacing:.05em;transition:color .2s;
+}
+#nav-drawer a:hover{color:var(--green)}
+
+/* ─── BUTTONS ─── */
+.btn{
+  padding:.78rem 1.8rem;font-family:'Outfit',sans-serif;
+  font-size:.85rem;font-weight:600;letter-spacing:.04em;
+  text-decoration:none;border:none;cursor:pointer;
+  transition:all .22s;display:inline-flex;align-items:center;gap:.5rem;
+  border-radius:5px;line-height:1;
+}
+.btn-primary{background:var(--green);color:#030d06}
+.btn-primary:hover{background:#4ade80;transform:translateY(-2px);box-shadow:0 0 28px var(--green-glow)}
+.btn-outline{background:transparent;color:var(--green);border:1px solid rgba(34,197,94,.4)}
+.btn-outline:hover{background:var(--green-lt);transform:translateY(-2px);border-color:var(--green)}
+.btn-blue{background:transparent;color:var(--blue);border:1px solid rgba(56,189,248,.4)}
+.btn-blue:hover{background:var(--blue-lt);transform:translateY(-2px);border-color:var(--blue)}
+
+/* ─── SECTION COMMON ─── */
+section{position:relative;z-index:1;padding:7rem 4rem}
+.s-alt{background:#0b1510}
+.s-dark{background:var(--bg2)}
+
+.eyebrow{
+  font-family:'Outfit',sans-serif;font-size:.68rem;font-weight:700;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--green);
+  margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem;
+}
+.eyebrow::before{content:'//';color:var(--muted2);font-size:.7rem}
+.sec-title{
+  font-family:'Outfit',sans-serif;font-weight:800;
+  font-size:clamp(1.9rem,3.5vw,2.8rem);letter-spacing:-.025em;
+  margin-bottom:.8rem;line-height:1.1;
+}
+.sec-title span{color:var(--green)}
+.sec-bar{
+  width:36px;height:3px;
+  background:linear-gradient(90deg,var(--green),var(--blue));
+  border-radius:2px;margin-bottom:3rem;
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes up{to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+@keyframes blink{50%{opacity:0}}
+@keyframes fadeIn{to{opacity:1}}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease}
+.reveal.in{opacity:1;transform:translateY(0)}
+.rd1{transition-delay:.1s}
+.rd2{transition-delay:.2s}
+
+/* ─── HERO ─── */
+.hero{
+  position:relative;z-index:1;min-height:100vh;
+  display:grid;grid-template-columns:1.1fr 1fr;
+  align-items:center;padding:0 4rem;gap:4rem;padding-top:var(--nav-h);
+}
+.hero-eyebrow{
+  display:flex;align-items:center;gap:.6rem;
+  font-family:'Outfit',sans-serif;font-size:.72rem;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--green);
+  margin-bottom:1.4rem;
+  opacity:0;transform:translateY(8px);animation:up .5s ease forwards .2s;
+}
+.eyebrow-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--green);box-shadow:0 0 10px var(--green);
+  animation:pulse 2s ease-in-out infinite;flex-shrink:0;
+}
+.hero-name{
+  font-family:'Outfit',sans-serif;font-weight:800;
+  font-size:clamp(2.8rem,5.5vw,5rem);line-height:1.0;letter-spacing:-.025em;
+  margin-bottom:1.2rem;
+  opacity:0;transform:translateY(22px);animation:up .7s ease forwards .3s;
+}
+.hero-name .hl-g{color:var(--green)}
+.hero-name .hl-b{color:var(--blue)}
+
+.hero-type-wrap{
+  font-size:1.05rem;color:var(--txt2);margin-bottom:1.2rem;min-height:1.7em;
+  opacity:0;animation:fadeIn .5s ease forwards .7s;
+}
+#hero-typed{color:var(--green);font-family:monospace;border-right:2px solid var(--green)}
+
+.hero-tagline{
+  font-size:.97rem;color:var(--muted);line-height:1.82;
+  margin-bottom:2rem;max-width:480px;
+  opacity:0;transform:translateY(16px);animation:up .7s ease forwards .5s;
+}
+.hero-tagline strong{color:var(--txt2);font-weight:500}
+
+.hero-badges{
+  display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:2.2rem;
+  opacity:0;animation:up .6s ease forwards .65s;
+}
+.hbadge{font-size:.7rem;font-weight:600;padding:.28rem .72rem;border-radius:4px;letter-spacing:.04em}
+.hb-g{background:var(--green-lt);color:var(--green);border:1px solid rgba(34,197,94,.25)}
+.hb-b{background:var(--blue-lt);color:var(--blue);border:1px solid rgba(56,189,248,.25)}
+
+.hero-actions{
+  display:flex;gap:.85rem;flex-wrap:wrap;
+  opacity:0;animation:up .6s ease forwards .8s;
+}
+
+/* Terminal card */
+.terminal{
+  background:#070c09;border:1px solid var(--bdr);border-radius:10px;overflow:hidden;
+  box-shadow:0 0 50px rgba(34,197,94,.07),0 24px 70px rgba(0,0,0,.55);
+  opacity:0;animation:up .8s ease forwards .45s;
+}
+.term-bar{
+  background:#0a1510;border-bottom:1px solid var(--bdr);
+  padding:.65rem 1rem;display:flex;align-items:center;gap:.45rem;
+}
+.td{width:10px;height:10px;border-radius:50%}
+.td:nth-child(1){background:#ff5f57}
+.td:nth-child(2){background:#febc2e}
+.td:nth-child(3){background:#28c840}
+.term-title{margin:0 auto;font-size:.7rem;color:var(--muted);letter-spacing:.12em;font-family:monospace}
+.term-body{padding:1.4rem 1.6rem}
+.cl{font-family:'Courier New',monospace;font-size:.76rem;line-height:2}
+.cl .cp{color:var(--green)} .cl .ck{color:var(--blue)}
+.cl .cs{color:#86efac}      .cl .cn{color:#fda4af}
+.cl .cc{color:#2a4030;font-style:italic}
+.cl .cw{color:var(--txt)}   .cl .ct{color:var(--teal)}
+.cursor{display:inline-block;width:2px;height:.9em;background:var(--green);vertical-align:middle;animation:blink 1.1s step-end infinite}
+
+/* ─── ABOUT ─── */
+.about-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:5rem;align-items:start}
+.about-bio{font-size:.96rem;color:var(--muted);line-height:1.87}
+.about-bio p+p{margin-top:1rem}
+.about-bio strong{color:var(--txt2);font-weight:500}
+.skills-col{display:flex;flex-direction:column;gap:1.4rem}
+.sg-label{font-size:.67rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted2);margin-bottom:.5rem}
+.skill-tags{display:flex;flex-wrap:wrap;gap:.38rem}
+.stag{
+  font-size:.74rem;font-weight:500;padding:.26rem .72rem;
+  border-radius:3px;border:1px solid var(--bdr);
+  color:var(--txt2);background:rgba(255,255,255,.02);
+  transition:all .18s;cursor:default;
+}
+.stag:hover{border-color:var(--green);color:var(--green);background:var(--green-lt)}
+
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--bdr);margin-top:3rem}
+.stat-cell{padding:1.6rem 1rem;text-align:center;border-right:1px solid var(--bdr)}
+.stat-cell:last-child{border-right:none}
+.stat-n{font-family:'Outfit',sans-serif;font-size:1.9rem;font-weight:800;color:var(--green);line-height:1}
+.stat-l{font-size:.67rem;font-weight:600;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:.35rem}
+
+/* ─── PROJECTS ─── */
+.proj-filters{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2.5rem}
+.pf-btn{
+  font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;
+  padding:.4rem 1rem;border-radius:4px;
+  border:1px solid var(--bdr);background:transparent;color:var(--muted);cursor:pointer;transition:all .2s;
+}
+.pf-btn:hover{border-color:var(--green);color:var(--green)}
+.pf-btn.active{background:var(--green-lt);border-color:rgba(34,197,94,.4);color:var(--green)}
+
+.proj-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:1px;background:var(--bdr);border:1px solid var(--bdr);
+}
+.pcard{
+  background:var(--card);padding:2rem;
+  display:flex;flex-direction:column;gap:.85rem;
+  position:relative;overflow:hidden;transition:background .2s;
+  border:1px solid transparent;
+}
+.pcard:hover{background:#111d16;border-color:transparent}
+.pcard::after{
+  content:'';position:absolute;bottom:0;left:0;width:0;height:2px;
+  background:linear-gradient(90deg,var(--green),var(--blue));
+  transition:width .38s ease;
+}
+.pcard:hover::after{width:100%}
+.pcard.hidden{display:none}
+
+.pbadge{
+  display:inline-flex;align-items:center;gap:.3rem;
+  font-size:.64rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:.22rem .68rem;border-radius:3px;width:fit-content;
+}
+.pb-g{background:var(--green-lt);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.pb-b{background:var(--blue-lt);color:var(--blue);border:1px solid rgba(56,189,248,.2)}
+
+.pnum{font-family:monospace;font-size:.67rem;color:var(--muted2);letter-spacing:.1em}
+.pname{font-family:'Outfit',sans-serif;font-weight:700;font-size:1.18rem;line-height:1.25;color:var(--txt)}
+.pdesc{font-size:.875rem;color:var(--muted);line-height:1.72;flex:1}
+.pdesc.prop{font-size:.78rem;color:#233325;font-style:italic;margin-top:.1rem}
+.ptech{display:flex;flex-wrap:wrap;gap:.35rem}
+.ptag{
+  font-size:.67rem;font-weight:500;padding:.19rem .58rem;
+  background:#080f0a;border:1px solid var(--bdr);color:var(--muted2);border-radius:3px;
+}
+.plinks{display:flex;gap:1.2rem;padding-top:.6rem;border-top:1px solid var(--bdr)}
+.plink{
+  font-size:.71rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:.35rem;transition:color .18s;
+}
+.plink:hover{color:var(--green)}
+.plink svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2}
+.plink.off{opacity:.28;cursor:default;pointer-events:none}
+
+/* ─── SKILLS DEEP DIVE ─── */
+.skills-deep{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:1px;background:var(--bdr);border:1px solid var(--bdr);
+}
+.skill-block{
+  background:var(--card2);padding:1.8rem;
+  display:flex;flex-direction:column;gap:1rem;transition:background .2s;
+}
+.skill-block:hover{background:#0d1820}
+.sb-top{display:flex;align-items:center;gap:.75rem}
+.sb-icon{font-size:1.5rem;flex-shrink:0}
+.sb-title{font-family:'Outfit',sans-serif;font-weight:700;font-size:.95rem}
+.sb-bars{display:flex;flex-direction:column;gap:.55rem}
+.sbar-row{display:flex;flex-direction:column;gap:.25rem}
+.sbar-label{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);font-weight:500}
+.sbar-label span:last-child{color:var(--green);font-family:monospace;font-size:.68rem}
+.sbar-track{height:4px;background:var(--bdr);border-radius:2px;overflow:hidden}
+.sbar-fill{
+  height:100%;background:linear-gradient(90deg,var(--green),var(--blue));
+  border-radius:2px;width:0;transition:width 1.2s cubic-bezier(.16,1,.3,1);
+}
+
+/* ─── EXPERIENCE / TIMELINE ─── */
+/* Layout: [date col] [center track col] [content col] */
+.timeline{
+  display:flex;flex-direction:column;max-width:880px;
+}
+.tl-item{
+  display:grid;
+  grid-template-columns:140px 40px 1fr;
+  gap:0;
+  padding:2.5rem 0;
+  border-bottom:1px solid var(--bdr);
+  position:relative;
+}
+.tl-item:last-child{border-bottom:none}
+
+/* Date column */
+.tl-date{
+  font-family:monospace;font-size:.73rem;color:var(--muted2);
+  line-height:1.65;padding-top:.15rem;text-align:right;
+  padding-right:1.2rem;
+}
+
+/* Center track: vertical line + dot */
+.tl-track{
+  display:flex;flex-direction:column;align-items:center;
+  position:relative;
+}
+.tl-track::before{
+  content:'';position:absolute;top:0;bottom:0;left:50%;
+  transform:translateX(-50%);
+  width:1px;background:var(--bdr);
+}
+.tl-dot{
+  width:12px;height:12px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--green);
+  box-shadow:0 0 10px var(--green-glow);
+  margin-top:.18rem;position:relative;z-index:1;flex-shrink:0;
+  transition:background .25s,box-shadow .25s;
+}
+.tl-item:hover .tl-dot{background:var(--green);box-shadow:0 0 18px var(--green-glow)}
+
+/* Content column */
+.tl-content{padding-left:1.4rem;padding-top:0}
+.tl-role{
+  font-family:'Outfit',sans-serif;font-weight:700;font-size:1.05rem;
+  color:var(--txt);margin-bottom:.22rem;line-height:1.3;
+}
+.tl-company{
+  font-size:.78rem;font-weight:600;color:var(--green);
+  letter-spacing:.04em;margin-bottom:.85rem;
+}
+.tl-bullets{
+  list-style:none;padding:0;
+  display:flex;flex-direction:column;gap:.5rem;
+}
+.tl-bullets li{
+  font-size:.875rem;color:var(--muted);line-height:1.68;
+  padding-left:1.2rem;position:relative;
+}
+.tl-bullets li::before{
+  content:'▸';position:absolute;left:0;top:.15rem;
+  color:var(--green);font-size:.7rem;
+}
+.tl-desc{font-size:.875rem;color:var(--muted);line-height:1.72}
+
+/* ─── CONTACT ─── */
+.contact-wrap{max-width:740px;margin:0 auto;text-align:center}
+.contact-heading{
+  font-family:'Outfit',sans-serif;font-weight:800;
+  font-size:clamp(2.2rem,4.5vw,3.4rem);letter-spacing:-.025em;
+  line-height:1.05;margin-bottom:1rem;
+}
+.contact-heading .cg{color:var(--green)}
+.contact-heading .cb{color:var(--blue)}
+.contact-sub{
+  font-size:.95rem;color:var(--muted);line-height:1.82;
+  margin-bottom:2.5rem;max-width:540px;margin-left:auto;margin-right:auto;
+}
+.contact-cols{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:2.5rem;text-align:left;margin-bottom:2.5rem;
+}
+
+/* Contact link cards */
+.contact-cards{display:flex;flex-direction:column;gap:1px;background:var(--bdr);border:1px solid var(--bdr)}
+.citem{
+  background:var(--card);padding:1.1rem 1.3rem;
+  display:flex;align-items:center;gap:.9rem;
+  text-decoration:none;color:var(--txt);transition:background .18s;
+}
+.citem:hover{background:#0d1e12}
+.citem-icon{
+  width:34px;height:34px;border-radius:6px;flex-shrink:0;
+  background:var(--green-lt);border:1px solid rgba(34,197,94,.2);
+  display:flex;align-items:center;justify-content:center;
+}
+.citem-icon svg{width:15px;height:15px;stroke:var(--green);fill:none;stroke-width:2}
+.citem-label{font-size:.67rem;font-weight:700;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.12rem}
+.citem-val{font-size:.85rem;font-weight:500;color:var(--txt2)}
+
+/* Contact form */
+.contact-form-wrap{background:var(--surf);border:1px solid var(--bdr);padding:2rem}
+.form-title{font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;margin-bottom:1.5rem;color:var(--txt)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:0}
+.form-group{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem}
+.form-group label{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2)}
+.form-group input,
+.form-group textarea,
+.form-group select{
+  background:rgba(255,255,255,.03);border:1px solid var(--bdr);
+  color:var(--txt);font-family:'Inter',sans-serif;font-size:.87rem;
+  padding:.65rem .9rem;border-radius:4px;outline:none;
+  transition:border-color .2s,box-shadow .2s;resize:vertical;
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder{color:var(--muted2)}
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--green-lt)}
+.form-group input.err,
+.form-group textarea.err{border-color:#f87171}
+.form-group select.err{border-color:#f87171}
+.ferr{font-size:.72rem;color:#f87171;margin-top:.25rem;display:none}
+.ferr.show{display:block}
+.form-select option{background:var(--bg2);color:var(--txt)}
+.form-success{
+  display:none;text-align:center;padding:2.5rem 1rem;
+  color:var(--green);font-weight:600;font-size:.95rem;line-height:1.6;
+}
+.form-success.show{display:block}
+
+/* Clearance bar */
+.clearance-bar{
+  margin-top:3rem;padding-top:2rem;border-top:1px solid var(--bdr);
+  font-family:monospace;font-size:.7rem;color:var(--muted2);letter-spacing:.08em;
+  display:flex;justify-content:center;flex-wrap:wrap;gap:.7rem;
+}
+.cb-item::before{content:'[';color:var(--green)}
+.cb-item::after{content:']';color:var(--green)}
+
+/* ─── FOOTER ─── */
+footer{
+  position:relative;z-index:1;
+  background:#060b08;border-top:1px solid var(--bdr);
+  padding:1.8rem 4rem;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.foot-left{font-family:monospace;font-size:.7rem;color:var(--muted2)}
+.foot-right{display:flex;gap:1.5rem}
+.foot-link{font-size:.72rem;color:var(--muted);text-decoration:none;transition:color .18s;letter-spacing:.06em}
+.foot-link:hover{color:var(--green)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:960px){
+  nav#main-nav{padding:0 1.5rem}
+  .nav-links{display:none!important}
+  .nav-ham{display:flex}
+  .hero{grid-template-columns:1fr;padding:5.5rem 1.5rem 3rem;gap:2.5rem;min-height:auto}
+  .terminal{order:-1}
+  section{padding:5rem 1.5rem}
+  .about-grid{grid-template-columns:1fr;gap:3rem}
+  .stat-row{grid-template-columns:1fr 1fr}
+  .stat-cell{border-bottom:1px solid var(--bdr)}
+  /* Timeline collapses to single column on mobile */
+  .tl-item{grid-template-columns:1fr;gap:.4rem;padding:2rem 0}
+  .tl-track{display:none}
+  .tl-date{text-align:left;padding-right:0;padding-bottom:.3rem}
+  .tl-content{padding-left:0}
+  .contact-cols{grid-template-columns:1fr;gap:1.5rem}
+  .form-row{grid-template-columns:1fr}
+  footer{flex-direction:column;gap:1rem;text-align:center;padding:1.5rem}
+}
+@media(max-width:640px){
+  .hero-name{font-size:clamp(2.2rem,9vw,3rem)}
+  .proj-grid{grid-template-columns:1fr}
+  .skills-deep{grid-template-columns:1fr}
+  .stat-row{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- Scroll progress bar -->
+<div id="scroll-progress"></div>
+
+<!-- Back to top button -->
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
+
+<!-- ════════════════ NAV ════════════════ -->
+<nav id="main-nav">
+  <a href="#" class="nav-logo">sew<span>.</span>dev</a>
+  <ul class="nav-links">
+    <li><a href="#about"      data-section="about"      onclick="navTo('about',event)">About</a></li>
+    <li><a href="#projects"   data-section="projects"   onclick="navTo('projects',event)">Projects</a></li>
+    <li><a href="#skills"     data-section="skills"     onclick="navTo('skills',event)">Skills</a></li>
+    <li><a href="#experience" data-section="experience" onclick="navTo('experience',event)">Experience</a></li>
+    <li><a href="#contact"    class="nav-cta"           onclick="navTo('contact',event)">Contact</a></li>
+  </ul>
+  <button class="nav-ham" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile full-screen drawer -->
+<div id="nav-drawer">
+  <a href="#about"      onclick="navTo('about',event);closeDrawer()">About</a>
+  <a href="#projects"   onclick="navTo('projects',event);closeDrawer()">Projects</a>
+  <a href="#skills"     onclick="navTo('skills',event);closeDrawer()">Skills</a>
+  <a href="#experience" onclick="navTo('experience',event);closeDrawer()">Experience</a>
+  <a href="#contact"    onclick="navTo('contact',event);closeDrawer()">Contact</a>
+</div>
+
+<!-- ════════════════ HERO ════════════════ -->
+<section class="hero" id="hero">
+  <div class="hero-text">
+    <div class="hero-eyebrow"><div class="eyebrow-dot"></div>Available for new opportunities</div>
+    <h1 class="hero-name">
+      <span class="hl-g">Sebastian</span><br/>
+      Espinoza<span class="hl-b">-Wong</span>
+    </h1>
+    <div class="hero-type-wrap"><span id="hero-typed"></span></div>
+    <p class="hero-tagline">
+      <strong>Systems Analyst &amp; Software Developer</strong> based in Frederick, MD.
+      I build data pipelines, enterprise tools, and full-stack web applications that solve
+      real problems — from live industrial systems to community-facing platforms.
+    </p>
+    <div class="hero-badges">
+      <span class="hbadge hb-g">Python · SQL · JavaScript</span>
+      <span class="hbadge hb-b">DoD Clearance Eligible</span>
+      <span class="hbadge hb-g">Bilingual EN / ES</span>
+      <span class="hbadge hb-b">B.S. Information Science — UMD</span>
+    </div>
+    <div class="hero-actions">
+      <a href="#projects" class="btn btn-primary" onclick="navTo('projects',event)">View Projects →</a>
+      <a href="#contact"  class="btn btn-outline" onclick="navTo('contact',event)">Get in Touch</a>
+      <a href="https://github.com/SebasTIanWong123" target="_blank" class="btn btn-blue">GitHub ↗</a>
+    </div>
+  </div>
+
+  <div class="terminal">
+    <div class="term-bar">
+      <div class="td"></div><div class="td"></div><div class="td"></div>
+      <div class="term-title">sebastian.py</div>
+    </div>
+    <div class="term-body">
+      <div class="cl"><span class="cc"># Systems Analyst &amp; Software Developer</span></div>
+      <div class="cl">&nbsp;</div>
+      <div class="cl"><span class="ck">class</span> <span class="cp">Developer</span><span class="cw">:</span></div>
+      <div class="cl">&nbsp;&nbsp;<span class="ck">def</span> <span class="ct">__init__</span><span class="cw">(self):</span></div>
+      <div class="cl">&nbsp;&nbsp;&nbsp;&nbsp;self.name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="cs">"Sebastian E-W"</span></div>
+      <div class="cl">&nbsp;&nbsp;&nbsp;&nbsp;self.location&nbsp;&nbsp;= <span class="cs">"Frederick, MD"</span></div>
+      <div class="cl">&nbsp;&nbsp;&nbsp;&nbsp;self.role&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="cs">"Systems Analyst"</span></div>
+      <div class="cl">&nbsp;&nbsp;&nbsp;&nbsp;self.education = <span class="cs">"B.S. InfoSci — UMD"</span></div>
+      <div class="cl">&nbsp;&nbsp;&nbsp;&nbsp;self.stack&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= [<span class="cs">"Python"</span>,<span class="cs">"SQL"</span>,<span class="cs">"JS"</span>]</div>
+      <div class="cl">&nbsp;&nbsp;&nbsp;&nbsp;self.clearance = <span class="cs">"DoD Eligible"</span></div>
+      <div class="cl">&nbsp;&nbsp;&nbsp;&nbsp;self.speaks&nbsp;&nbsp;&nbsp;&nbsp;= [<span class="cs">"English"</span>,<span class="cs">"Spanish"</span>]</div>
+      <div class="cl">&nbsp;&nbsp;&nbsp;&nbsp;self.open&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="cn">True</span></div>
+      <div class="cl">&nbsp;</div>
+      <div class="cl"><span class="ct">seb</span> <span class="cw">=</span> <span class="cp">Developer</span><span class="cw">()</span></div>
+      <div class="cl"><span class="ck">print</span><span class="cw">(</span><span class="ct">seb</span>.open<span class="cw">)</span>&nbsp;<span class="cc"># True</span>&nbsp;<span class="cursor"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ ABOUT ════════════════ -->
+<section id="about" class="s-alt">
+  <div class="eyebrow">01 About</div>
+  <h2 class="sec-title">Who I <span>am</span></h2>
+  <div class="sec-bar"></div>
+  <div class="about-grid reveal">
+    <div class="about-bio">
+      <p>I'm a systems analyst and software developer with a <strong>B.S. in Information Science from the University of Maryland</strong>. My work sits at the intersection of data, infrastructure, and software — writing production SQL against enterprise databases, deploying Python applications to live industrial systems, and building accessible web applications that real people rely on.</p>
+      <p>At <strong>Triad Systems Engineering</strong>, I support Terminal Automation Systems running at energy terminals nationwide — writing code that runs in production, managing remote infrastructure via SSH, and keeping critical systems online. As a student, I architected a bilingual web platform for <strong>EcoLatinos</strong>, a nonprofit connecting Latino communities to local environmental resources.</p>
+      <p>I'm bilingual in <strong>English and Spanish</strong>, eligible for a DoD security clearance, and motivated by work that creates tangible impact — whether that's improving data accuracy in an industrial system or making a community resource more accessible.</p>
+      <br/>
+      <a href="#contact" class="btn btn-outline" style="font-size:.82rem" onclick="navTo('contact',event)">Say Hello →</a>
+    </div>
+    <div class="skills-col">
+      <div>
+        <div class="sg-label">Languages</div>
+        <div class="skill-tags">
+          <span class="stag">Python</span><span class="stag">SQL</span><span class="stag">JavaScript</span>
+          <span class="stag">Java</span><span class="stag">R</span><span class="stag">HTML / CSS</span><span class="stag">C</span>
+        </div>
+      </div>
+      <div>
+        <div class="sg-label">Data &amp; Analytics</div>
+        <div class="skill-tags">
+          <span class="stag">Pandas</span><span class="stag">NumPy</span><span class="stag">Tableau</span>
+          <span class="stag">Power BI</span><span class="stag">Snowflake</span><span class="stag">Alteryx</span>
+        </div>
+      </div>
+      <div>
+        <div class="sg-label">Databases</div>
+        <div class="skill-tags">
+          <span class="stag">MySQL</span><span class="stag">PostgreSQL</span>
+          <span class="stag">MongoDB</span><span class="stag">SnowSQL</span>
+        </div>
+      </div>
+      <div>
+        <div class="sg-label">Systems &amp; Infrastructure</div>
+        <div class="skill-tags">
+          <span class="stag">VMware</span><span class="stag">SSH / PuTTY</span>
+          <span class="stag">Active Directory</span><span class="stag">Linux CLI</span>
+          <span class="stag">Windows Enterprise</span>
+        </div>
+      </div>
+      <div>
+        <div class="sg-label">Dev &amp; Process</div>
+        <div class="skill-tags">
+          <span class="stag">Git / GitHub</span><span class="stag">CI/CD</span>
+          <span class="stag">Agile / SAFe</span><span class="stag">REST APIs</span>
+          <span class="stag">ServiceNow</span><span class="stag">Jira</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stat-row reveal rd1">
+    <div class="stat-cell"><div class="stat-n">3+</div><div class="stat-l">Years Experience</div></div>
+    <div class="stat-cell"><div class="stat-n">3.2</div><div class="stat-l">UMD GPA</div></div>
+    <div class="stat-cell"><div class="stat-n">2</div><div class="stat-l">Languages Spoken</div></div>
+    <div class="stat-cell"><div class="stat-n">DoD</div><div class="stat-l">Clearance Eligible</div></div>
+  </div>
+</section>
+
+<!-- ════════════════ PROJECTS ════════════════ -->
+<section id="projects">
+  <div class="eyebrow">02 Projects</div>
+  <h2 class="sec-title">Things I've <span>built</span></h2>
+  <div class="sec-bar"></div>
+
+  <div class="proj-filters reveal" id="proj-filters">
+    <button class="pf-btn active" data-filter="all">All</button>
+    <button class="pf-btn" data-filter="work">Work</button>
+    <button class="pf-btn" data-filter="personal">Personal</button>
+    <button class="pf-btn" data-filter="python">Python</button>
+    <button class="pf-btn" data-filter="web">Web</button>
+  </div>
+
+  <div class="proj-grid reveal rd1" id="proj-grid">
+
+    <div class="pcard" data-tags="work python">
+      <div class="pnum">01</div>
+      <div class="pbadge pb-b">⚙ Work · Triad Systems Engineering</div>
+      <div class="pname">Tank Strapping Chart Converter</div>
+      <p class="pdesc">Extended a Python application running inside live industrial Terminal Automation Systems. Operators upload a CSV of a tank strapping chart and the system automatically converts it into TMS 6 and TMS 6v formats — replacing a tedious manual process. Uses object-oriented Python to translate physical volume measurements into precise volumetric calculations, deployed in production across multiple energy terminal sites.</p>
+      <p class="pdesc prop">Proprietary code — deployed to live production infrastructure.</p>
+      <div class="ptech">
+        <span class="ptag">Python</span><span class="ptag">OOP</span>
+        <span class="ptag">CSV Parsing</span><span class="ptag">TMS Integration</span>
+        <span class="ptag">Industrial Systems</span>
+      </div>
+      <div class="plinks">
+        <span class="plink off">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Proprietary — No Public Repo
+        </span>
+      </div>
+    </div>
+
+    <div class="pcard" data-tags="personal web">
+      <div class="pnum">02</div>
+      <div class="pbadge pb-g">★ Personal · In Development</div>
+      <div class="pname">Ardyn — Vet &amp; Pet Health Platform</div>
+      <p class="pdesc">Full-featured web app prototype bridging pet owners and veterinary professionals. Dual dashboards — owners manage appointments, health records, medications, and insurance; vets manage patient records, lab orders, and clinical notes. Includes an AI-powered symptom assistant, bilingual-ready UI, and mobile-first WCAG-compliant design.</p>
+      <div class="ptech">
+        <span class="ptag">HTML5</span><span class="ptag">CSS3</span>
+        <span class="ptag">JavaScript</span><span class="ptag">Responsive Design</span>
+        <span class="ptag">WCAG</span><span class="ptag">UX Design</span>
+      </div>
+      <div class="plinks">
+        <a href="https://github.com/SebasTIanWong123" target="_blank" class="plink">
+          <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          GitHub
+        </a>
+        <a href="Arydn_Prototype_1.html" target="_blank" class="plink">
+          <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Live Preview ↗
+        </a>
+      </div>
+    </div>
+
+    <div class="pcard" data-tags="work web personal">
+      <div class="pnum">03</div>
+      <div class="pbadge pb-g">UMD Capstone · iConsultancy</div>
+      <div class="pname">EcoLatinos — Community Resource Platform</div>
+      <p class="pdesc">Built a bilingual web application for EcoLatinos, a nonprofit connecting Latino communities to local environmental resources. Delivered through Agile sprints with continuous client feedback. Mobile-first, WCAG-compliant, and designed for accessibility across all devices. Led three rounds of Figma prototyping from low fidelity to final and presented the live product and architecture to the client at delivery.</p>
+      <div class="ptech">
+        <span class="ptag">JavaScript</span><span class="ptag">HTML5 / CSS3</span>
+        <span class="ptag">Figma</span><span class="ptag">Agile / Scrum</span>
+        <span class="ptag">WCAG</span><span class="ptag">UX Research</span>
+      </div>
+      <div class="plinks">
+        <a href="https://github.com/SebasTIanWong123" target="_blank" class="plink">
+          <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+
+    <div class="pcard" data-tags="personal python">
+      <div class="pnum">04</div>
+      <div class="pbadge pb-b">School Project · INST414 Data Science</div>
+      <div class="pname">NBA Player Analytics Pipeline</div>
+      <p class="pdesc">End-to-end data science pipeline analyzing LeBron James' career stats scraped from Basketball Reference. Covers every stage: data extraction, transformation, loading, predictive modeling, and Tableau visualization. Built to help sports teams identify player performance trends and early injury signals. Organized with separate ETL, Analysis (model.py, evaluate.py), and Visualization modules.</p>
+      <div class="ptech">
+        <span class="ptag">Python</span><span class="ptag">Pandas</span>
+        <span class="ptag">ETL</span><span class="ptag">Web Scraping</span>
+        <span class="ptag">Scikit-learn</span><span class="ptag">Tableau</span>
+      </div>
+      <div class="plinks">
+        <a href="https://github.com/SebasTIanWong123/inst414-final-project-Sebastian-EspinozaWong" target="_blank" class="plink">
+          <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          View on GitHub ↗
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════ SKILLS ════════════════ -->
+<section id="skills" class="s-dark">
+  <div class="eyebrow">03 Skills</div>
+  <h2 class="sec-title">What I <span>work with</span></h2>
+  <div class="sec-bar"></div>
+  <div class="skills-deep reveal" id="skills-grid">
+
+    <div class="skill-block">
+      <div class="sb-top"><div class="sb-icon">🐍</div><div class="sb-title">Data &amp; Scripting</div></div>
+      <div class="sb-bars">
+        <div class="sbar-row"><div class="sbar-label"><span>Python</span><span>90%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="90"></div></div></div>
+        <div class="sbar-row"><div class="sbar-label"><span>Pandas / NumPy</span><span>85%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="85"></div></div></div>
+        <div class="sbar-row"><div class="sbar-label"><span>R</span><span>70%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="70"></div></div></div>
+        <div class="sbar-row"><div class="sbar-label"><span>Alteryx / OpenRefine</span><span>75%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="75"></div></div></div>
+      </div>
+    </div>
+
+    <div class="skill-block">
+      <div class="sb-top"><div class="sb-icon">🗄️</div><div class="sb-title">Databases &amp; ETL</div></div>
+      <div class="sb-bars">
+        <div class="sbar-row"><div class="sbar-label"><span>SQL (MySQL / PostgreSQL)</span><span>90%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="90"></div></div></div>
+        <div class="sbar-row"><div class="sbar-label"><span>Snowflake / SnowSQL</span><span>75%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="75"></div></div></div>
+        <div class="sbar-row"><div class="sbar-label"><span>MongoDB</span><span>65%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="65"></div></div></div>
+        <div class="sbar-row"><div class="sbar-label"><span>ETL Pipelines</span><span>85%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="85"></div></div></div>
+      </div>
+    </div>
+
+    <div class="skill-block">
+      <div class="sb-top"><div class="sb-icon">📊</div><div class="sb-title">Visualization &amp; BI</div></div>
+      <div class="sb-bars">
+        <div class="sbar-row"><div class="sbar-label"><span>Tableau</span><span>80%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="80"></div></div></div>
+        <div class="sbar-row"><div class="sbar-label"><span>Power BI</span><span>75%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="75"></div></div></div>
+        <div class="sbar-row"><div class="sbar-label"><span>Excel (Advanced)</span><span>90%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="90"></div></div></div>
+      </div>
+    </div>
+
+    <div class="skill-block">
+      <div class="sb-top"><div class="sb-icon">🌐</div><div class="sb-title">Web Development</div></div>
+      <div class="sb-bars">
+        <div class="sbar-row"><div class="sbar-label"><span>JavaScript</span><span>80%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="80"></div></div></div>
+        <div class="sbar-row"><div class="sbar-label"><span>HTML5 / CSS3</span><span>85%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="85"></div></div></div>
+        <div class="sbar-row"><div class="sbar-label"><span>REST APIs</span><span>80%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="80"></div></div></div>
+        <div class="sbar-row"><div class="sbar-label"><span>Responsive / WCAG</span><span>85%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="85"></div></div></div>
+      </div>
+    </div>
+
+    <div class="skill-block">
+      <div class="sb-top"><div class="sb-icon">🖥️</div><div class="sb-title">Systems &amp; Infrastructure</div></div>
+      <div class="sb-bars">
+        <div class="sbar-row"><div class="sbar-label"><span>VMware</span><span>75%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="75"></div></div></div>
+        <div class="sbar-row"><div class="sbar-label"><span>SSH / Linux CLI</span><span>80%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="80"></div></div></div>
+        <div class="sbar-row"><div class="sbar-label"><span>Active Directory / GPO</span><span>75%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="75"></div></div></div>
+        <div class="sbar-row"><div class="sbar-label"><span>Windows Enterprise</span><span>85%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="85"></div></div></div>
+      </div>
+    </div>
+
+    <div class="skill-block">
+      <div class="sb-top"><div class="sb-icon">🔧</div><div class="sb-title">Dev Tools &amp; Process</div></div>
+      <div class="sb-bars">
+        <div class="sbar-row"><div class="sbar-label"><span>Git / GitHub</span><span>85%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="85"></div></div></div>
+        <div class="sbar-row"><div class="sbar-label"><span>Agile / SAFe</span><span>80%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="80"></div></div></div>
+        <div class="sbar-row"><div class="sbar-label"><span>ServiceNow / Jira</span><span>80%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="80"></div></div></div>
+        <div class="sbar-row"><div class="sbar-label"><span>CI/CD / DevSecOps</span><span>70%</span></div><div class="sbar-track"><div class="sbar-fill" data-w="70"></div></div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════ EXPERIENCE ════════════════ -->
+<section id="experience" class="s-alt">
+  <div class="eyebrow">04 Experience</div>
+  <h2 class="sec-title">Where I've <span>worked</span></h2>
+  <div class="sec-bar"></div>
+
+  <div class="timeline reveal">
+
+    <!-- Triad -->
+    <div class="tl-item">
+      <div class="tl-date">
+        Sept 2024<br/>— Present<br/><br/>Sterling, VA
+      </div>
+      <div class="tl-track"><div class="tl-dot"></div></div>
+      <div class="tl-content">
+        <div class="tl-role">Systems Analyst</div>
+        <div class="tl-company">Triad Systems Engineering</div>
+        <ul class="tl-bullets">
+          <li>Write and optimize SQL queries against enterprise production databases to identify and resolve data integrity issues within Terminal Automation Systems across large-scale distributed Windows environments.</li>
+          <li>Designed and deployed a Python OOP application update to an industrial tank gauging system — translating physical inputs into volumetric calculations now running in live inventory reporting across multiple production sites.</li>
+          <li>Built repeatable ETL workflows to validate, clean, and import field datasets directly into production SQL databases, eliminating manual error and accelerating data ingestion nationwide.</li>
+          <li>Administer VMware virtual machine environments across multiple geographic sites, supporting high availability for mission-critical infrastructure.</li>
+          <li>Execute CMD batch scripts and manage remote systems via SSH; own the full incident lifecycle in ServiceNow from diagnosis to resolution across remote sites.</li>
+          <li>Support PLC and Terminal Automation Systems; assist with workstation security including patching, antivirus, firewall, and Group Policy configurations.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- iConsultancy -->
+    <div class="tl-item">
+      <div class="tl-date">
+        Aug – Dec 2024<br/><br/>College Park, MD
+      </div>
+      <div class="tl-track"><div class="tl-dot"></div></div>
+      <div class="tl-content">
+        <div class="tl-role">Full-Stack Developer</div>
+        <div class="tl-company">iConsultancy — UMD Capstone (EcoLatinos)</div>
+        <ul class="tl-bullets">
+          <li>Architected and delivered a production-grade bilingual web application for EcoLatinos — connecting Spanish-speaking communities to environmental resources — through iterative Agile sprints with real client feedback.</li>
+          <li>Engineered mobile-first, WCAG-compliant front-end interfaces ensuring accessibility across all device breakpoints.</li>
+          <li>Drove UX research and usability testing with real end users; produced three rounds of Figma prototypes from low to high fidelity.</li>
+          <li>Presented system architecture and live product demo to non-technical stakeholders at final delivery.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- PNC Bank -->
+    <div class="tl-item">
+      <div class="tl-date">
+        Dec 2020<br/>— Dec 2021<br/><br/>Frederick, MD
+      </div>
+      <div class="tl-track"><div class="tl-dot"></div></div>
+      <div class="tl-content">
+        <div class="tl-role">Teller</div>
+        <div class="tl-company">PNC Bank</div>
+        <ul class="tl-bullets">
+          <li>Sustained 90%+ client satisfaction handling high-volume transactions with precision in a heavily regulated environment.</li>
+          <li>Managed sensitive customer data with strict confidentiality, building disciplined habits in data accuracy and stakeholder communication under pressure.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- UMD -->
+    <div class="tl-item">
+      <div class="tl-date">
+        Graduated<br/>Dec 2024
+      </div>
+      <div class="tl-track"><div class="tl-dot"></div></div>
+      <div class="tl-content">
+        <div class="tl-role">B.S. Information Science — GPA 3.2</div>
+        <div class="tl-company">University of Maryland, College Park</div>
+        <p class="tl-desc">Relevant coursework: Data Science Techniques, Database Design &amp; Modeling, Dynamic Web Applications, Object-Oriented Programming, Data Visualization, Technologies &amp; Infrastructure Architecture.</p>
+      </div>
+    </div>
+
+    <!-- FCC -->
+    <div class="tl-item">
+      <div class="tl-date">
+        Graduated<br/>Dec 2022
+      </div>
+      <div class="tl-track"><div class="tl-dot"></div></div>
+      <div class="tl-content">
+        <div class="tl-role">A.A. Business Administration — Honors · GPA 3.8</div>
+        <div class="tl-company">Frederick Community College</div>
+        <p class="tl-desc">Graduated with honors. Foundation in business operations, data analysis, and professional communication.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════ CONTACT ════════════════ -->
+<section id="contact">
+  <div class="contact-wrap reveal">
+    <div class="eyebrow" style="justify-content:center">05 Contact</div>
+    <h2 class="contact-heading">
+      Let's <span class="cg">build</span> something<br/><span class="cb">together.</span>
+    </h2>
+    <p class="contact-sub">
+      Open to full-time roles in software development, data engineering, and systems analysis —
+      especially government, defense, or tech. U.S. citizen, DoD clearance eligible, bilingual EN/ES.
+      I reply within 24 hours.
+    </p>
+
+    <div class="contact-cols">
+
+      <!-- Contact info cards -->
+      <div>
+        <div class="contact-cards">
+          <a href="mailto:sebasespwong02@gmail.com" class="citem">
+            <div class="citem-icon">
+              <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <div class="citem-label">Email</div>
+              <div class="citem-val">sebasespwong02&#64;gmail.com</div>
+            </div>
+          </a>
+          <a href="tel:2403166118" class="citem">
+            <div class="citem-icon">
+              <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.82a16 16 0 0 0 6 6l1.62-1.62a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.04z"/></svg>
+            </div>
+            <div>
+              <div class="citem-label">Phone</div>
+              <div class="citem-val">(240) 316-6118</div>
+            </div>
+          </a>
+          <a href="https://www.linkedin.com/in/sebastian-espinoza-wong/" target="_blank" class="citem">
+            <div class="citem-icon">
+              <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            </div>
+            <div>
+              <div class="citem-label">LinkedIn</div>
+              <div class="citem-val">sebastian-espinoza-wong</div>
+            </div>
+          </a>
+          <a href="https://github.com/SebasTIanWong123" target="_blank" class="citem">
+            <div class="citem-icon">
+              <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            </div>
+            <div>
+              <div class="citem-label">GitHub</div>
+              <div class="citem-val">SebasTIanWong123</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Contact form -->
+      <div class="contact-form-wrap">
+        <div class="form-title">// Send a Message</div>
+        <div id="form-success" class="form-success">
+          ✓ Message sent! I'll get back to you within 24 hours.
+        </div>
+        <div id="form-inner">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="f-name">Name *</label>
+              <input type="text" id="f-name" placeholder="Your name" autocomplete="name"/>
+              <span class="ferr" id="err-name">Please enter your name.</span>
+            </div>
+            <div class="form-group">
+              <label for="f-email">Email *</label>
+              <input type="email" id="f-email" placeholder="you@email.com" autocomplete="email"/>
+              <span class="ferr" id="err-email">Please enter a valid email.</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="f-subject">Subject *</label>
+            <select id="f-subject" class="form-select">
+              <option value="">Select a topic...</option>
+              <option>Job Opportunity</option>
+              <option>Freelance / Contract</option>
+              <option>Collaboration</option>
+              <option>General Inquiry</option>
+            </select>
+            <span class="ferr" id="err-subject">Please select a topic.</span>
+          </div>
+          <div class="form-group">
+            <label for="f-msg">Message *</label>
+            <textarea id="f-msg" rows="5" placeholder="Tell me about the role or project..."></textarea>
+            <span class="ferr" id="err-msg">Please write a message (at least 10 characters).</span>
+          </div>
+          <button class="btn btn-primary" style="width:100%" onclick="submitForm()">Send Message →</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="clearance-bar">
+      <span class="cb-item">U.S. Citizen</span>
+      <span class="cb-item">DoD Clearance Eligible</span>
+      <span class="cb-item">Bilingual EN / ES</span>
+      <span class="cb-item">Frederick, MD</span>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ FOOTER ════════════════ -->
+<footer>
+  <div class="foot-left">// &copy; 2026 Sebastian Espinoza-Wong</div>
+  <div class="foot-right">
+    <a href="#about"      class="foot-link" onclick="navTo('about',event)">About</a>
+    <a href="#projects"   class="foot-link" onclick="navTo('projects',event)">Projects</a>
+    <a href="#skills"     class="foot-link" onclick="navTo('skills',event)">Skills</a>
+    <a href="#experience" class="foot-link" onclick="navTo('experience',event)">Experience</a>
+    <a href="#contact"    class="foot-link" onclick="navTo('contact',event)">Contact</a>
+  </div>
+</footer>
+
+<!-- ════════════════ JAVASCRIPT ════════════════ -->
+<script>
+/* ── navTo: reliable smooth scroll accounting for fixed nav height ── */
+function navTo(id, e){
+  if(e){ e.preventDefault(); e.stopPropagation(); }
+  const el = document.getElementById(id);
+  if(!el) return;
+  const navH = 64;
+  const top  = el.getBoundingClientRect().top + window.scrollY - navH;
+  window.scrollTo({top, behavior:'smooth'});
+}
+
+/* ── Scroll progress bar + back-to-top + nav shadow ── */
+const prog    = document.getElementById('scroll-progress');
+const backTop = document.getElementById('back-top');
+const mainNav = document.getElementById('main-nav');
+
+window.addEventListener('scroll', () => {
+  const st   = window.scrollY;
+  const docH = document.documentElement.scrollHeight - window.innerHeight;
+  if(docH > 0) prog.style.width = (st / docH * 100) + '%';
+  backTop.classList.toggle('show', st > 400);
+  mainNav.classList.toggle('scrolled', st > 10);
+});
+
+/* ── Reveal on scroll ── */
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); });
+}, {threshold: 0.06});
+document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
+
+/* ── Active nav highlight on scroll ── */
+const sectionIds = ['about','projects','skills','experience','contact'];
+const navAnchors = document.querySelectorAll('.nav-links a[data-section]');
+
+const secObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      navAnchors.forEach(a => a.classList.remove('active'));
+      const match = document.querySelector(`.nav-links a[data-section="${e.target.id}"]`);
+      if(match) match.classList.add('active');
+    }
+  });
+}, {threshold: 0.35});
+
+sectionIds.forEach(id => {
+  const el = document.getElementById(id);
+  if(el) secObs.observe(el);
+});
+
+/* ── Mobile hamburger ── */
+const hamburger = document.getElementById('hamburger');
+const drawer    = document.getElementById('nav-drawer');
+
+hamburger.addEventListener('click', () => {
+  const isOpen = hamburger.classList.toggle('open');
+  if(isOpen){
+    drawer.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  } else {
+    drawer.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+});
+
+function closeDrawer(){
+  hamburger.classList.remove('open');
+  drawer.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ── Typewriter ── */
+const phrases = ['Systems Analyst','Software Developer','Python Developer','Data Engineer','Full-Stack Builder'];
+let pi = 0, ci = 0, deleting = false;
+const typed = document.getElementById('hero-typed');
+
+function typeLoop(){
+  const word = phrases[pi];
+  if(!deleting){
+    typed.textContent = word.slice(0, ++ci);
+    if(ci === word.length){ deleting = true; return setTimeout(typeLoop, 1800); }
+  } else {
+    typed.textContent = word.slice(0, --ci);
+    if(ci === 0){ deleting = false; pi = (pi + 1) % phrases.length; return setTimeout(typeLoop, 300); }
+  }
+  setTimeout(typeLoop, deleting ? 55 : 85);
+}
+setTimeout(typeLoop, 1200);
+
+/* ── Skill bars animate into view ── */
+const skillsGrid = document.getElementById('skills-grid');
+if(skillsGrid){
+  const barObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        e.target.querySelectorAll('.sbar-fill').forEach(b => {
+          b.style.width = (b.dataset.w || 0) + '%';
+        });
+        barObs.unobserve(e.target);
+      }
+    });
+  }, {threshold: 0.2});
+  skillsGrid.querySelectorAll('.skill-block').forEach(b => barObs.observe(b));
+}
+
+/* ── Project filter ── */
+const filterBar = document.getElementById('proj-filters');
+if(filterBar){
+  filterBar.addEventListener('click', e => {
+    const btn = e.target.closest('.pf-btn');
+    if(!btn) return;
+    document.querySelectorAll('.pf-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('.pcard').forEach(card => {
+      const tags = card.dataset.tags || '';
+      const show = filter === 'all' || tags.split(' ').includes(filter);
+      card.classList.toggle('hidden', !show);
+    });
+  });
+}
+
+/* ── Contact form validation + mailto submit ── */
+function submitForm(){
+  const name    = document.getElementById('f-name');
+  const email   = document.getElementById('f-email');
+  const subject = document.getElementById('f-subject');
+  const msg     = document.getElementById('f-msg');
+  let valid     = true;
+
+  function check(field, errId, condition){
+    const err = document.getElementById(errId);
+    if(condition){
+      field.classList.add('err');
+      err.classList.add('show');
+      valid = false;
+    } else {
+      field.classList.remove('err');
+      err.classList.remove('show');
+    }
+  }
+
+  check(name,    'err-name',    name.value.trim().length < 2);
+  check(email,   'err-email',   !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim()));
+  check(subject, 'err-subject', !subject.value);
+  check(msg,     'err-msg',     msg.value.trim().length < 10);
+
+  if(!valid) return;
+
+  const body = encodeURIComponent(
+    `Name: ${name.value.trim()}\nEmail: ${email.value.trim()}\nSubject: ${subject.value}\n\n${msg.value.trim()}`
+  );
+  window.location.href =
+    `mailto:sebasespwong02@gmail.com?subject=${encodeURIComponent(subject.value)}&body=${body}`;
+
+  document.getElementById('form-inner').style.display  = 'none';
+  document.getElementById('form-success').classList.add('show');
+}
+</script>
+</body>
+</html>
